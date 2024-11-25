@@ -1,0 +1,65 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.edge.service import Service
+import time
+
+# WebDriver'ı başlatın
+def start_browser():
+    # Microsoft Edge için:
+    driver_path = r"C:\webdrivers\msedgedriver.exe"  # Burada doğru yolu belirtin
+    service = Service(driver_path)
+    driver = webdriver.Edge(service=service)
+    driver.maximize_window()
+    return driver
+
+# YouTube videosuna gidip işlem yapma
+def automate_youtube(video_url, email, password, comment_text):
+    driver = start_browser()
+
+    # Google giriş sayfasına git
+    driver.get("https://accounts.google.com/signin")
+    time.sleep(2)
+
+    # Google hesabı ile giriş yap
+    email_input = driver.find_element(By.ID, "identifierId")
+    email_input.send_keys(email)
+    email_input.send_keys(Keys.RETURN)
+    time.sleep(2)
+
+    password_input = driver.find_element(By.NAME, "password")
+    password_input.send_keys(password)
+    password_input.send_keys(Keys.RETURN)
+    time.sleep(3)
+
+    # YouTube videosuna git
+    driver.get(video_url)
+    time.sleep(5)  # Video yüklenmesini bekle
+
+    # Video beğen
+    like_button = driver.find_element(By.XPATH, '//button[@aria-label="Beğen"]')
+    like_button.click()
+    time.sleep(2)
+
+    # Yorum ekle
+    comment_section = driver.find_element(By.XPATH, '//div[@id="placeholder-area"]')
+    comment_section.click()
+    time.sleep(2)
+
+    comment_input = driver.find_element(By.XPATH, '//div[@id="contenteditable-root"]')
+    comment_input.send_keys(comment_text)
+    time.sleep(1)
+    comment_input.send_keys(Keys.CONTROL, Keys.RETURN)
+
+    print("Video izlenip beğenildi ve yorum yapıldı.")
+    time.sleep(5)
+    driver.quit()
+
+# Kullanıcı bilgileri
+email = "kumarbaz3206@gmail.com"  # Google hesabınızın e-posta adresi
+password = "isakaan201512"      # Google hesabınızın şifresi
+video_url = "https://www.youtube.com/shorts/zUPmQcy6OCAD"  # İzlemek istediğiniz YouTube video URL'si
+comment_text = "Harika bir video, çok beğendim!"  # Yorumunuz
+
+# Fonksiyonu çalıştır
+automate_youtube(video_url, email, password, comment_text)
